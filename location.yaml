@@ -8,6 +8,5 @@ spec:
   targets:
     # Point directly at each template definition file
     - https://github.com/tpharrison/rhdh-templates/blob/main/templates/java-springboot/template.yaml
-    - https://github.com/tpharrison/rhdh-templates/blob/main/templates/react/template.yaml
   rules:
     - allow: [Template]

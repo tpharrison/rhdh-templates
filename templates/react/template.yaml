@@ -1,9 +1,0 @@
-kind: Template
-metadata:
-  name: react
-  title: React Application
-  description: Generates a React frontend.
-  tags: [javascript, react]
-spec:
-  owner: platform-team
-  type: service
