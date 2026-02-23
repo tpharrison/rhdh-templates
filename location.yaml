@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Location
 metadata:
-  name: my-templates
+  name: rhdh-templates
   description: My org software templates (RHDH)
 spec:
   type: url
