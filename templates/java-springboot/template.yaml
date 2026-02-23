@@ -1,0 +1,85 @@
+kind: Template
+metadata:
+  name: java-springboot
+  title: Java Spring Boot Service
+  description: Generates a Spring Boot service with standard workflows, infra, and editor settings.
+  tags: [java, spring, springboot]
+spec:
+  owner: platform-team
+  type: service
+
+  parameters:
+    - title: Service details
+      required: [name, description, owner]
+      properties:
+        name:
+          title: Component name
+          type: string
+          description: "Example: orders-service"
+        description:
+          title: Description
+          type: string
+        owner:
+          title: Owner
+          type: string
+          description: "Backstage entity ref (example: group:default/platform-team)"
+          default: "group:default/platform-team"
+
+    - title: Java settings
+      required: [pnsc]
+      properties:
+        pnsc:
+          title: Package name short code (pnsc)
+          type: string
+          description: "Used in /gov/irs/<pnsc>/... and class names. Example: orders"
+          pattern: "^[a-z][a-z0-9_]*$"
+
+    - title: Repository
+      required: [repoUrl]
+      properties:
+        repoUrl:
+          title: GitHub repo
+          type: string
+          description: "Format: github.com?owner=<org>&repo=<repo>"
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+
+  steps:
+    - id: fetch
+      name: Fetch skeleton
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          pnsc: ${{ parameters.pnsc }}
+        # If you have files that should not be templated, list them here.
+        # copyWithoutTemplating:
+        #   - "**/*.png"
+
+    - id: publish
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        repoUrl: ${{ parameters.repoUrl }}
+        description: ${{ parameters.description }}
+        defaultBranch: main
+
+    - id: register
+      name: Register in RHDH catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in Catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
