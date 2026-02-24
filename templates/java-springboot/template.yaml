@@ -89,7 +89,10 @@ spec:
         files:
           # main application class filename
           - from: src/main/java/gov/irs/app/Application.java
-            to: src/main/java/gov/irs/${{ parameters.proj_name_snake }}/${{ parameters.proj_name_snake }}Application.java
+            to: src/main/java/gov/irs/app/${{ parameters.proj_name_snake }}Application.java
+
+          # - from: src/main/java/gov/irs/app
+          #   to: src/main/java/gov/irs/${{ parameters.proj_name_snake }}/${{ parameters.proj_name_snake }}Application.java
 
           # test package folder
           - from: src/test/java/gov/irs/app
