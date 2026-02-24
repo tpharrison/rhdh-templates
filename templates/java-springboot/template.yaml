@@ -98,7 +98,7 @@ spec:
 
           # main application class filename (path updated because folder moved)
           - from: src/main/java/gov/irs/${{ parameters.project_name | lower | replace("-", "_") | replace(" ", "_") }}/Application.java
-            to: src/main/java/gov/irs/${{ parameters.project_name | lower | replace("-", "_") | replace(" ", "_") }}/${{ parameters.project_name | lower | replace("-", "_") | replace(" ", "_") }}Application.java
+            to: src/main/java/gov/irs/${{ parameters.project_name | lower | replace("-", "_") | replace(" ", "_") }}/${{ parameters.project_name | lower | replace("-", "_") | replace(" ", "_") | title | replace(" ", "") }}Application.java
 
     - id: publish
       name: Publish to GitHub (tpharrison)
