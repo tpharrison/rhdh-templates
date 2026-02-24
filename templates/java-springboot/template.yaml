@@ -10,42 +10,101 @@ spec:
   type: service
 
   parameters:
-    - title: Service details
-      required: [name, description, owner]
+    - title: Project
+      required:
+        - project_name
+        - template_name
       properties:
-        name:
-          title: Component name
+        project_name:
+          title: Project Name
           type: string
-          description: "Example: orders-service"
-        description:
-          title: Description
-          type: string
-        owner:
-          title: Owner
-          type: string
-          description: "Backstage entity ref (example: group:default/platform-team)"
-          default: "group:default/platform-team"
+          description: The name of the project.
+          ui:autofocus: true
+          minLength: 1
 
-    - title: Java settings
-      required: [pnsc]
+        template_name:
+          title: Project Template
+          type: string
+          description: The name of the template that will be used to bootstrap your project.
+          enum:
+            - java-springboot
+            - react
+          enumNames:
+            - Java Spring Boot
+            - React
+
+    - title: GitHub (IRS)
+      required:
+        - github_repo_url
+        - github_org_name
+        - github_pat
       properties:
-        pnsc:
-          title: Package name short code (pnsc)
+        github_repo_url:
+          title: GitHub Enterprise URL
           type: string
-          description: "Used in /gov/irs/<pnsc>/... and class names. Example: orders"
-          pattern: "^[a-z][a-z0-9_]*$"
+          description: This is the base web address for the IRS GitHub instance.
+          default: https://github.enterprise.irs.gov
+          pattern: "^https://.+"
+          ui:help: "Example: https://github.enterprise.irs.gov"
 
-    - title: Repository
-      required: [repoUrl]
+        github_org_name:
+          title: GitHub Organization
+          type: string
+          description: The GitHub Organization that the project will be created under.
+          enum:
+            - AD
+            - Platform-Engineering
+            - Infra-Platform
+
+        github_pat:
+          title: GitHub PAT
+          type: string
+          description: >
+            A GitHub Personal Access Token (PAT) is a password-like secret that lets a tool or script
+            act on GitHub as you over HTTPS/API. It should start with "github_pat_".
+          pattern: "^github_pat_.*"
+          ui:widget: password
+
+    - title: OpenShift / ECP
+      required:
+        - openshift_cluster
+        - openshift_namespace
+        - openshift_token
+      properties:
+        openshift_cluster:
+          title: OpenShift Cluster
+          type: string
+          description: The Kubernetes/OpenShift environment where your apps run.
+          minLength: 1
+
+        openshift_namespace:
+          title: OpenShift Namespace
+          type: string
+          description: >
+            The logical folder inside a cluster that isolates resources (apps, services, secrets, configs)
+            for a team or project.
+          minLength: 1
+
+        openshift_token:
+          title: ECP Token
+          type: string
+          description: The credential used to authenticate to the cluster's API (like an access key).
+          ui:widget: password
+          minLength: 1
+
+    - title: Repository (publish target)
+      required:
+        - repoUrl
       properties:
         repoUrl:
-          title: GitHub repo
+          title: New repository location
           type: string
-          description: "Format: github.com?owner=<org>&repo=<repo>"
+          description: "Format: <host>?owner=<org>&repo=<repo>"
           ui:field: RepoUrlPicker
           ui:options:
+            # NOTE: this must match your configured GitHub integration host(s) in RHDH
             allowedHosts:
-              - github.com
+              - github.enterprise.irs.gov
 
   steps:
     - id: fetch
@@ -54,20 +113,34 @@ spec:
       input:
         url: ./skeleton
         values:
-          name: ${{ parameters.name }}
-          description: ${{ parameters.description }}
-          owner: ${{ parameters.owner }}
-          pnsc: ${{ parameters.pnsc }}
-        # If you have files that should not be templated, list them here.
+          # Requested variables
+          project_name: ${{ parameters.project_name }}
+          template_name: ${{ parameters.template_name }}
+          github_repo_url: ${{ parameters.github_repo_url }}
+          github_org_name: ${{ parameters.github_org_name }}
+          github_pat: ${{ parameters.github_pat }}
+          openshift_cluster: ${{ parameters.openshift_cluster }}
+          openshift_namespace: ${{ parameters.openshift_namespace }}
+          openshift_token: ${{ parameters.openshift_token }}
+
+          # Optional convenience values you already reference in files
+          # (You can remove these if you don't want computed variants)
+          project_name_kebab_case: ${{ parameters.project_name | lower | replace(" ", "-") }}
+          project_name_snake_case: ${{ parameters.project_name | lower | replace(" ", "_") }}
+
+        # IMPORTANT:
+        # GitHub Actions workflow files contain `${{ ... }}` which can collide with templating.
+        # If you see templating collisions, uncomment the following lines to copy them verbatim.
         # copyWithoutTemplating:
-        #   - "**/*.png"
+        #   - .github/workflows/*.yml
+        #   - .github/workflows/*.yaml
 
     - id: publish
       name: Publish to GitHub
       action: publish:github
       input:
         repoUrl: ${{ parameters.repoUrl }}
-        description: ${{ parameters.description }}
+        description: ${{ parameters.project_name }}
         defaultBranch: main
 
     - id: register
