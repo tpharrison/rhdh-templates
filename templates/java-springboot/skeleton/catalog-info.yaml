@@ -1,7 +1,7 @@
 ﻿apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: ${{ values.project_name_kebab_case }}
+  name: ${{ values.proj_name_kebab }}
   description: "Generated from ${{ values.template_name }}"
 spec:
   type: service

@@ -74,8 +74,8 @@ spec:
           openshift_token: ${{ parameters.openshift_token }}
 
           # Convenience values (you already reference these in skeleton files)
-          project_name_kebab_case: ${{ parameters.project_name | lower | replace(" ", "-") }}
-          project_name_snake_case: ${{ parameters.project_name | lower | replace(" ", "_") }}
+          proj_name_kebab: ${{ parameters.project_name | lower | replace(" ", "-") }}
+          proj_name_snake: ${{ parameters.project_name | lower | replace(" ", "_") }}
 
         # If workflow files get mangled because of `${{ ... }}` collisions, uncomment:
         # copyWithoutTemplating:

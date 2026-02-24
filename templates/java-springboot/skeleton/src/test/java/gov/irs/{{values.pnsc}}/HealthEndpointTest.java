@@ -1,1 +1,0 @@
-package gov.irs.${{ values.project_name_snake_case }};

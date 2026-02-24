@@ -1,2 +1,2 @@
-project_name_snake_case: ${{ values.project_name_snake_case }}
-project_name_kebab_case: ${{ values.project_name_kebab_case }}
+proj_name_snake: ${{ values.proj_name_snake }}
+proj_name_kebab: ${{ values.proj_name_kebab }}
