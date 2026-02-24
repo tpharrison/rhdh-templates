@@ -76,12 +76,7 @@ spec:
           # Convenience values
           proj_name_kebab: ${{ parameters.project_name | lower | replace(" ", "-") }}
           proj_name_snake: ${{ parameters.project_name | lower | replace(" ", "_") }}
-          proj_name_pascal: ${{ parameters.project_name
-            | replace("-", " ")
-            | replace("_", " ")
-            | title
-            | replace(" ", "")
-          }}          
+          proj_name_pascal: ${{ parameters.project_name | replace("-", " ") | replace("_", " ") | title | replace(" ", "") }}
 
         # If workflow files get mangled because of `${{ ... }}` collisions, uncomment:
         # copyWithoutTemplating:
