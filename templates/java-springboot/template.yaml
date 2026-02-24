@@ -33,38 +33,6 @@ spec:
             - Java Spring Boot
             - React
 
-    - title: GitHub (IRS)
-      required:
-        - github_repo_url
-        - github_org_name
-        - github_pat
-      properties:
-        github_repo_url:
-          title: GitHub Enterprise URL
-          type: string
-          description: This is the base web address for the IRS GitHub instance.
-          default: https://github.enterprise.irs.gov
-          pattern: "^https://.+"
-          ui:help: "Example: https://github.enterprise.irs.gov"
-
-        github_org_name:
-          title: GitHub Organization
-          type: string
-          description: The GitHub Organization that the project will be created under.
-          enum:
-            - AD
-            - Platform-Engineering
-            - Infra-Platform
-
-        github_pat:
-          title: GitHub PAT
-          type: string
-          description: >
-            A GitHub Personal Access Token (PAT) is a password-like secret that lets a tool or script
-            act on GitHub as you over HTTPS/API. It should start with "github_pat_".
-          pattern: "^github_pat_.*"
-          ui:widget: password
-
     - title: OpenShift / ECP
       required:
         - openshift_cluster
@@ -92,20 +60,6 @@ spec:
           ui:widget: password
           minLength: 1
 
-    - title: Repository (publish target)
-      required:
-        - repoUrl
-      properties:
-        repoUrl:
-          title: New repository location
-          type: string
-          description: "Format: <host>?owner=<org>&repo=<repo>"
-          ui:field: RepoUrlPicker
-          ui:options:
-            # NOTE: this must match your configured GitHub integration host(s) in RHDH
-            allowedHosts:
-              - github.enterprise.irs.gov
-
   steps:
     - id: fetch
       name: Fetch skeleton
@@ -113,33 +67,27 @@ spec:
       input:
         url: ./skeleton
         values:
-          # Requested variables
           project_name: ${{ parameters.project_name }}
           template_name: ${{ parameters.template_name }}
-          github_repo_url: ${{ parameters.github_repo_url }}
-          github_org_name: ${{ parameters.github_org_name }}
-          github_pat: ${{ parameters.github_pat }}
           openshift_cluster: ${{ parameters.openshift_cluster }}
           openshift_namespace: ${{ parameters.openshift_namespace }}
           openshift_token: ${{ parameters.openshift_token }}
 
-          # Optional convenience values you already reference in files
-          # (You can remove these if you don't want computed variants)
+          # Convenience values (you already reference these in skeleton files)
           project_name_kebab_case: ${{ parameters.project_name | lower | replace(" ", "-") }}
           project_name_snake_case: ${{ parameters.project_name | lower | replace(" ", "_") }}
 
-        # IMPORTANT:
-        # GitHub Actions workflow files contain `${{ ... }}` which can collide with templating.
-        # If you see templating collisions, uncomment the following lines to copy them verbatim.
+        # If workflow files get mangled because of `${{ ... }}` collisions, uncomment:
         # copyWithoutTemplating:
         #   - .github/workflows/*.yml
         #   - .github/workflows/*.yaml
 
     - id: publish
-      name: Publish to GitHub
+      name: Publish to GitHub (tpharrison)
       action: publish:github
       input:
-        repoUrl: ${{ parameters.repoUrl }}
+        # Creates: https://github.com/tpharrison/<project_name>
+        repoUrl: github.com?owner=tpharrison&repo=${{ parameters.project_name }}
         description: ${{ parameters.project_name }}
         defaultBranch: main
 
