@@ -33,6 +33,19 @@ spec:
             - Java Spring Boot
             - React
 
+    - title: GitHub (IRS)
+      required:
+        - github_org_name
+      properties:
+        github_org_name:
+          title: GitHub Organization
+          type: string
+          description: The GitHub Organization that the project will be created under.
+          enum:
+            - AD
+            - Platform-Engineering
+            - Infra-Platform
+
     - title: OpenShift / ECP
       required:
         - openshift_cluster
