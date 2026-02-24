@@ -1,9 +1,9 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: {{ values.project_name }}
-  description: Generated from {{ values.template_name }}
+  name: {{ project_name_kebab_case }}
+  description: Generated from {{ template_name }}
 spec:
   type: service
-  owner: platform-team
+  owner: group:default/platform-team
   lifecycle: experimental
