@@ -1,0 +1,6 @@
+github_username: ${{ github_username }}
+github_token: ${{ github_token }}
+openshift_server: ${{ openshift_server }}
+argocd_server: ${{ argocd_server }}
+argocd_token: ${{ argocd_token }}
+project_name_kebab_case: ${{ project_name_kebab_case }}

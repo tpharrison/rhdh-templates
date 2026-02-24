@@ -1,0 +1,3 @@
+project_name_snake_case: ${{ project_name_snake_case }}
+project_name_kebab_case: ${{ project_name_kebab_case }}
+openshift_cluster: ${{ openshift_cluster }}
