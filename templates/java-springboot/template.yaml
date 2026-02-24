@@ -73,9 +73,15 @@ spec:
           openshift_namespace: ${{ parameters.openshift_namespace }}
           openshift_token: ${{ parameters.openshift_token }}
 
-          # Convenience values (you already reference these in skeleton files)
+          # Convenience values
           proj_name_kebab: ${{ parameters.project_name | lower | replace(" ", "-") }}
           proj_name_snake: ${{ parameters.project_name | lower | replace(" ", "_") }}
+          proj_name_pascal: ${{ parameters.project_name
+            | replace("-", " ")
+            | replace("_", " ")
+            | title
+            | replace(" ", "")
+          }}          
 
         # If workflow files get mangled because of `${{ ... }}` collisions, uncomment:
         # copyWithoutTemplating:
@@ -87,16 +93,17 @@ spec:
       action: fs:rename
       input:
         files:
-          # main application class filename
-          - from: src/main/java/gov/irs/app/Application.java
-            to: src/main/java/gov/irs/app/${{ parameters.proj_name_snake }}Application.java
-
-          # - from: src/main/java/gov/irs/app
-          #   to: src/main/java/gov/irs/${{ parameters.proj_name_snake }}/${{ parameters.proj_name_snake }}Application.java
+          # main package folder
+          - from: src/main/java/gov/irs/app
+            to: src/main/java/gov/irs/${{ parameters.project_name | lower | replace("-", "_") | replace(" ", "_") }}
 
           # test package folder
           - from: src/test/java/gov/irs/app
-            to: src/test/java/gov/irs/${{ parameters.proj_name_snake }}
+            to: src/test/java/gov/irs/${{ parameters.project_name | lower | replace("-", "_") | replace(" ", "_") }}
+
+          # main application class filename (path updated because folder moved)
+          - from: src/main/java/gov/irs/${{ parameters.project_name | lower | replace("-", "_") | replace(" ", "_") }}/Application.java
+            to: src/main/java/gov/irs/${{ parameters.project_name | lower | replace("-", "_") | replace(" ", "_") }}/${{ parameters.project_name | lower | replace("-", "_") | replace(" ", "_") }}Application.java
 
     - id: publish
       name: Publish to GitHub (tpharrison)
