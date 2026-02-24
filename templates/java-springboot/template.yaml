@@ -87,16 +87,12 @@ spec:
       action: fs:rename
       input:
         files:
-          # main package folder
-          - from: src/main/java/gov/irs/{proj_name_snake}
-            to: src/main/java/gov/irs/${{ parameters.proj_name_snake }}
-
           # main application class filename
-          - from: src/main/java/gov/irs/{proj_name_snake}/{proj_name_snake}Application.java
+          - from: src/main/java/gov/irs/app/Application.java
             to: src/main/java/gov/irs/${{ parameters.proj_name_snake }}/${{ parameters.proj_name_snake }}Application.java
 
           # test package folder
-          - from: src/test/java/gov/irs/{proj_name_snake}
+          - from: src/test/java/gov/irs/app
             to: src/test/java/gov/irs/${{ parameters.proj_name_snake }}
 
     - id: publish
