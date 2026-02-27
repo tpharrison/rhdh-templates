@@ -1,0 +1,32 @@
+name: Test build-env variables
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-env-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Load build-env.txt
+        shell: bash
+        run: |
+          set -a
+          source .github/workflows/build-env.txt
+          set +a
+
+          echo "PROJ_NAME_KEBAB=$PROJ_NAME_KEBAB" >> "$GITHUB_ENV"
+          echo "APP_PORT=$APP_PORT" >> "$GITHUB_ENV"
+
+      - name: Use variables in shell
+        run: |
+          echo "Shell variable PROJ_NAME_KEBAB = $PROJ_NAME_KEBAB"
+          echo "Shell variable APP_PORT = $APP_PORT"
+
+      - name: Use variables in GitHub expression context
+        run: |
+          echo "Expression PROJ_NAME_KEBAB = ${{ env.PROJ_NAME_KEBAB }}"
+          echo "Expression APP_PORT = ${{ env.APP_PORT }}"
